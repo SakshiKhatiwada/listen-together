@@ -31,3 +31,30 @@ body {
     text-wrap: balance;
   }
 }
+
+/* globals.css */
+
+/* Custom Scrollbar Styles */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #2d3748;
+  border-radius: 100vh;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #718096;
+  border-radius: 100vh;
+  border: 2px solid #2d3748;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #4a5568;
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
