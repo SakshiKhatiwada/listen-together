@@ -3,47 +3,44 @@ import React, { useState } from "react";
 import MusicPlayerCard from "./MusicPlayerCard";
 import { IoMusicalNotesOutline } from "react-icons/io5";
 import { SidebarProps } from "@/app/types";
+import YouTubeAudioPlayer from "./YoutubeAudioPlayer";
 
 export default function Sidebar({ currentSong }: SidebarProps) {
   const [url, setUrl] = useState("");
-  const [name, setName] = useState("");
-  const [author, setAuthor] = useState("");
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    // Save metadata to localStorage
-    const song = { url, name, author };
-    const existingSongs = JSON.parse(localStorage.getItem("songs") || "[]");
-    existingSongs.push(song);
-    localStorage.setItem("songs", JSON.stringify(existingSongs));
-
-    // Download audio from YouTube
+  const downloadAudio = async (videoURL: string) => {
     try {
       const response = await fetch("/api/download", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ url }),
+        body: JSON.stringify({ videoURL }),
       });
 
       if (!response.ok) {
-        throw new Error("Failed to download the audio");
+        throw new Error("Failed to download audio");
       }
 
-      // Handle the downloaded audio stream here
       const blob = await response.blob();
-      const audioUrl = URL.createObjectURL(blob);
-      // You can use this URL to play the audio or handle it further
-      console.log("Downloaded audio URL:", audioUrl);
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.style.display = "none";
+      a.href = url;
+      a.download = "audio.mp3";
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
     } catch (error) {
-      console.error(error);
+      console.error("Error:", error);
     }
+  };
 
-    // Clear form fields
-    setUrl("");
-    setName("");
-    setAuthor("");
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault(); 
+    if (url) {
+      await downloadAudio(url);
+    }
   };
 
   return (
@@ -87,6 +84,7 @@ export default function Sidebar({ currentSong }: SidebarProps) {
 
       {/* Player Card */}
       {currentSong && <MusicPlayerCard currentSong={currentSong} />}
+      {/* <YouTubeAudioPlayer videoId="NO2R_vOPrYo"/> */}
     </div>
   );
 }

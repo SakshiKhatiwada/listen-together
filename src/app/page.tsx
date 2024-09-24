@@ -12,9 +12,13 @@ export default function Home() {
   // Fetch songs from the API
   useEffect(() => {
     const fetchSongs = async () => {
-      const response = await fetch("/api/songs"); 
-      const data: Song[] = await response.json(); 
-      setSongs(data); 
+      try {
+        const response = await fetch("/api/songs");
+        const data: Song[] = await response.json();
+        setSongs(data);
+      } catch (error) {
+        console.error("Error fetching songs:", error);
+      }
     };
 
     fetchSongs();
