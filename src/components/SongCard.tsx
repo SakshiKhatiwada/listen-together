@@ -1,5 +1,6 @@
 import React from "react";
 import Image from "next/image";
+import DefaultCover from "@/static/default.webp";
 
 export default function SongCard({ title, singer, thumbnail, onClick }: any) {
   return (
@@ -11,7 +12,7 @@ export default function SongCard({ title, singer, thumbnail, onClick }: any) {
       {/* Thumbnail */}
       <div className="relative w-full h-48">
         <Image
-          src={thumbnail}
+          src={thumbnail ?? DefaultCover}
           alt={`${title} thumbnail`}
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"

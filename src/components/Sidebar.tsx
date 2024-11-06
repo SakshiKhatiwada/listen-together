@@ -3,43 +3,28 @@ import React, { useState } from "react";
 import MusicPlayerCard from "./MusicPlayerCard";
 import { IoMusicalNotesOutline } from "react-icons/io5";
 import { SidebarProps } from "@/app/types";
-import YouTubeAudioPlayer from "./YoutubeAudioPlayer";
 
 export default function Sidebar({ currentSong }: SidebarProps) {
   const [url, setUrl] = useState("");
 
-  const downloadAudio = async (videoURL: string) => {
-    try {
-      const response = await fetch("/api/download", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ videoURL }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to download audio");
-      }
-
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.style.display = "none";
-      a.href = url;
-      a.download = "audio.mp3";
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault(); 
+  const handleAddLink = async (e: React.FormEvent) => {
+    e.preventDefault();
     if (url) {
-      await downloadAudio(url);
+      try {
+        const response = await fetch("/api/add-song", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ url }),
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to add song");
+        }
+      } catch (error) {
+        console.error("Error:", error);
+      }
     }
   };
 
@@ -56,16 +41,16 @@ export default function Sidebar({ currentSong }: SidebarProps) {
       </div>
 
       {/* Upload Music from PC */}
-      <div>
+      {/* <div>
         <button className="w-full bg-green-500 p-2 rounded-full hover:bg-green-600 transition duration-200">
           Add New Song
         </button>
-      </div>
+      </div> */}
 
       {/* Form to Add Link */}
       <div>
         <h3 className="text-lg font-semibold mb-2">Add a Song Link</h3>
-        <form className="space-y-4" onClick={handleSubmit}>
+        <form className="space-y-4" onSubmit={handleAddLink}>
           <input
             type="url"
             value={url}
@@ -76,6 +61,7 @@ export default function Sidebar({ currentSong }: SidebarProps) {
           <button
             type="submit"
             className="w-full bg-blue-500 p-2 rounded-full hover:bg-blue-600 transition duration-200"
+            onClick={handleAddLink}
           >
             Add Link
           </button>
@@ -84,7 +70,6 @@ export default function Sidebar({ currentSong }: SidebarProps) {
 
       {/* Player Card */}
       {currentSong && <MusicPlayerCard currentSong={currentSong} />}
-      {/* <YouTubeAudioPlayer videoId="NO2R_vOPrYo"/> */}
     </div>
   );
 }

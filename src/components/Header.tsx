@@ -4,7 +4,7 @@ import { BiCategory, BiMusic } from "react-icons/bi";
 import { IoSearchOutline } from "react-icons/io5";
 import { TbBrandGravatar } from "react-icons/tb";
 
-const Header = () => {
+const Header = ({ activeComponent, handleChangeComponent }: any) => {
   const [isFocused, setIsFocused] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(true);
 
@@ -40,10 +40,10 @@ const Header = () => {
                 isFocused && "text-white"
               }`}
             >
-              {isFocused ? (
-                <BiMusic size="1.5rem" />
+              {!(activeComponent === "Songs") ? (
+                <BiMusic size="1.5rem" onClick={handleChangeComponent}/>
               ) : (
-                <BiCategory size="1.5rem" />
+                <BiCategory size="1.5rem" onClick={handleChangeComponent} />
               )}
             </span>
           </button>
